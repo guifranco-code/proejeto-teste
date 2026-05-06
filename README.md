@@ -1,20 +1,47 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# Estoque Pro
 
-# Run and deploy your AI Studio app
+Sistema de gestão de estoque moderno e eficiente.
 
-This contains everything you need to run your app locally.
+## 🚀 Configuração para Vercel / GitHub
 
-View your app in AI Studio: https://ai.studio/apps/69e13ca9-7346-4b3c-90a9-abe727a97cad
+Ao fazer o deploy no Vercel, adicione as seguintes variáveis de ambiente (Environment Variables):
 
-## Run Locally
+- `VITE_SUPABASE_URL`: A URL do seu projeto Supabase.
+- `VITE_SUPABASE_ANON_KEY`: A chave anônima (anon key) do seu projeto Supabase.
 
-**Prerequisites:**  Node.js
+## 🗄️ Estrutura do Banco de Dados (Supabase SQL)
 
+Execute o código abaixo no **SQL Editor** do seu Supabase para criar as tabelas necessárias:
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+```sql
+-- Criar tabela de produtos
+create table products (
+  id uuid default gen_random_uuid() primary key,
+  name text not null,
+  description text,
+  price decimal(10,2) not null default 0,
+  stock int not null default 0,
+  category text,
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null
+);
+
+-- Criar tabela de vendas
+create table sales (
+  id uuid default gen_random_uuid() primary key,
+  product_id uuid references products(id) on delete cascade,
+  quantity int not null,
+  total_price decimal(10,2) not null,
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null
+);
+
+-- (Opcional) Habilitar Realtime
+alter publication supabase_realtime add table products;
+alter publication supabase_realtime add table sales;
+```
+
+## 🛠️ Tecnologias
+- React + Vite
+- Tailwind CSS
+- Lucide React
+- Supabase
+- Shadcn UI
